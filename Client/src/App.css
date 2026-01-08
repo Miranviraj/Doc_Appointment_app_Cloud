@@ -1,4 +1,5 @@
 /* src/App.css */
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -44,6 +45,7 @@ body {
 
 .nav-item {
   margin-left: 20px;
+  gap: 10px;
 }
 
 .nav-link {
@@ -124,12 +126,16 @@ body {
   background-color: #218838;
 }
 
-/* Login Page */
-.login-page {
-  display: flex;
-  justify-content: space-around;
-  gap: 20px;
+/* Login Page & Signup Page */
+.auth-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #79898b;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
 .form-container {
   flex: 1;
   min-width: 300px;
@@ -137,6 +143,19 @@ body {
   border: 1px solid #ddd;
   border-radius: 8px;
 }
+
+.login-page {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+/* Signup Page */
+.signup-page {
+  display: flex;
+  justify-content: center;
+}
+
 
 /* Form Styles */
 form {
@@ -146,7 +165,8 @@ form {
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-  padding: 12px;
+  width: 440px;
+  padding: 8px;
   margin-bottom: 15px;
   font-size: 1rem;
   border: 1px solid #ccc;

@@ -1,21 +1,22 @@
 // src/App.js
 
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { auth, db } from './firebaseConfig';
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDocs } from 'firebase/firestore';
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { auth, db } from "./firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
 
 // Import Pages
-import HomePage from './Pages/Home';
-import LoginPage from './Pages/Loginpage';
-import DoctorListPage from './Pages/DoctorListPage';
-import MyBookingsPage from './Pages/MyBookingsPage';
-import DoctorDetailsPage from './Pages/DoctorDetailsPage';
+import HomePage from "./Pages/Home";
+import LoginPage from "./Pages/Loginpage";
+import SignupPage from "./Pages/Signuppage";
+import DoctorListPage from "./Pages/DoctorListPage";
+import MyBookingsPage from "./Pages/MyBookingsPage";
+import DoctorDetailsPage from "./Pages/DoctorDetailsPage";
 // Import Components
-import Navigation from './Components/Navigation';
+import Navigation from "./Components/Navigation";
 
-import './App.css';
+import "./App.css";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -39,9 +40,9 @@ function App() {
       try {
         const doctorsCollectionRef = collection(db, "doctors");
         const snapshot = await getDocs(doctorsCollectionRef);
-        const doctorsData = snapshot.docs.map(doc => ({
+        const doctorsData = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
         setDoctors(doctorsData);
       } catch (error) {
@@ -59,36 +60,54 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <div className="App">
-        {/* Navigation is now on every page */}
-        <Navigation currentUser={currentUser} />
+    <div className="App">
+      {/* Navigation is now on every page */}
+      <Navigation currentUser={currentUser} />
 
-        {/* Routes define which page to show based on URL */}
-        <Routes>
-          <Route path="/" element={<HomePage currentUser={currentUser} />} />
-          
-         <Route path="/login" element={
-            currentUser ? <Navigate to="/" /> : <LoginPage />
-          } />
-          
-          {/* RENAMED to DoctorListPage */}
-          <Route path="/doctors" element={
-            currentUser ? <DoctorListPage doctors={doctors} loadingDoctors={loadingDoctors} /> : <Navigate to="/login" />
-          } />
+      {/* Routes define which page to show based on URL */}
+      <Routes>
+        <Route path="/" element={<HomePage currentUser={currentUser} />} />
 
-          {/* ⭐️ NEW: Doctor Details Page Route ⭐️ */}
-          <Route path="/doctor/:id" element={
-            currentUser ? <DoctorDetailsPage doctors={doctors} /> : <Navigate to="/login" />
-          } />
-          
-          <Route path="/my-bookings" element={
-            currentUser ? <MyBookingsPage /> : <Navigate to="/login" />
-          } />
-          
-        </Routes>
-      </div>
-    </BrowserRouter>
+        <Route
+          path="/login"
+          element={currentUser ? <Navigate to="/" /> : <LoginPage />}
+        />
+
+        <Route path="/signup" element={<SignupPage />} />
+
+        {/* RENAMED to DoctorListPage */}
+        <Route
+          path="/doctors"
+          element={
+            currentUser ? (
+              <DoctorListPage
+                doctors={doctors}
+                loadingDoctors={loadingDoctors}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        {/* ⭐️ NEW: Doctor Details Page Route ⭐️ */}
+        <Route
+          path="/doctor/:id"
+          element={
+            currentUser ? (
+              <DoctorDetailsPage doctors={doctors} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          path="/my-bookings"
+          element={currentUser ? <MyBookingsPage /> : <Navigate to="/login" />}
+        />
+      </Routes>
+    </div>
   );
 }
 
