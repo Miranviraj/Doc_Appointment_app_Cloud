@@ -13,8 +13,9 @@ services:
     build:
       context: ./Client
       args:
-        # Bake your VM's IP into the React build
-        - REACT_APP_SERVER_URL=http://34.47.186.74:5000
+        - REACT_APP_SERVER_URL=${REACT_APP_SERVER_URL}
+      - REACT_APP_FIREBASE_API_KEY=${REACT_APP_FIREBASE_API_KEY}
+  env_file: .env # Loads variables into the container environment
     container_name: react_client
     ports:
       - "80:80"
