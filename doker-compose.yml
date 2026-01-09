@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./server
+    container_name: express_server
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  frontend:
+    build: ./client
+    container_name: react_client
+    ports:
+      - "3000:80" # Maps host 3000 to container Nginx 80
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
