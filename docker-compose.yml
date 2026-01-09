@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./server
+    build: ./Server
     container_name: express_server
     ports:
       - "5000:5000"
@@ -10,10 +10,14 @@ services:
       - app-network
 
   frontend:
-    build: ./client
+    build:
+      context: ./Client
+      args:
+        # Bake your VM's IP into the React build
+        - REACT_APP_SERVER_URL=http://34.47.186.74:5000
     container_name: react_client
     ports:
-      - "3000:80" # Maps host 3000 to container Nginx 80
+      - "80:80"
     depends_on:
       - backend
     networks:

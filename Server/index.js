@@ -1,40 +1,41 @@
-// index.js (Your Node.js Server)
-
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
 
-// --- 1. INITIALIZE FIREBASE ADMIN ---
+// 1. INITIALIZE FIREBASE ADMIN
+// Note: Ensure serviceAccountKey.json is in your /Server folder on the VM
 const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// Create a reference to your Firestore database
 const db = admin.firestore();
-
-// --- 2. SET UP THE EXPRESS APP ---
 const app = express();
-app.use(cors()); // Allow requests from your React app
-app.use(express.json()); // Parse JSON request bodies
 
-// --- 3. THE AUTHENTICATION MIDDLEWARE ---
+// Update CORS to allow your VM's public IP
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://34.47.186.74"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+app.use(express.json());
+
+// AUTH MIDDLEWARE
 const verifyToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
-
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).send("Unauthorized: No token provided.");
   }
-
   const idToken = authHeader.split("Bearer ")[1];
-
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     req.user = decodedToken;
     next();
   } catch (error) {
-    console.error("Error verifying Firebase ID token:", error);
     res.status(403).send("Unauthorized: Invalid token.");
   }
 };
@@ -178,6 +179,7 @@ app.delete("/api/appointment/:id", verifyToken, async (req, res) => {
 });
 // --- 5. START THE SERVER ---
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+// CRITICAL FIX: Use 0.0.0.0 so Docker can route traffic
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on port ${PORT}`);
 });
