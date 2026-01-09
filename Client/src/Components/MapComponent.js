@@ -20,7 +20,7 @@ const MapComponent = ({ doctor }) => {
 
   return (
     <LoadScript
-      googleMapsApiKey="AIzaSyBZwaKa71uETzR3g5P0oXbDqH1ecGuuim0" // Make sure your key is here
+      googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
     >
       <GoogleMap
         mapContainerStyle={containerStyle}
